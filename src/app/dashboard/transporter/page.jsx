@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, X, Users, Truck, BarChart3, Clock, Bell, User } from "lucide-react";
+import { Menu, X, Users, Truck, BarChart3, Clock, Bell, User,MapPin } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation"
 import { usePathname } from "next/navigation";
 import { clearMessages, logoutSuccess } from "@/redux/slices/userSlice";
 import { toast } from "react-toastify";
-import { fetchAllDrivers } from "@/redux/driversActions";
+import { fetchAllDrivers, verifyDriver } from "@/redux/driversActions";
 
 export default function Transporter({ moduleName = "Transporter" }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -39,6 +39,20 @@ export default function Transporter({ moduleName = "Transporter" }) {
         }, 2000);
     };
 
+
+    const handleDriverVerification = (driverId, location) => {
+        
+        dispatch(verifyDriver(driverId));
+
+      
+        if (location && location !== 'N/A') {
+            const [latitude, longitude] = location.split(',').map(coord => coord.trim());
+            const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+            window.open(googleMapsUrl, '_blank');
+        } else {
+            toast.error("Location information is not available");
+        }
+    };
 
     // Navigation handler
     const handleNavigation = (path) => {
@@ -266,44 +280,67 @@ export default function Transporter({ moduleName = "Transporter" }) {
                             />
                         </div>
                         <div className="overflow-x-auto">
-                            {drivers && drivers.map((driver, index) => {
+                        <table className="w-full">
+                            <thead>
+                                <tr>
+                                    <th className="p-4 text-left">ID</th>
+                                    <th className="p-4 text-left">Name</th>
+                                    <th className="p-4 text-left">Email</th>
+                                    <th className="p-4 text-left">Created At</th>
+                                    <th className="p-4 text-left">Mobile</th>
+                                    <th className="p-4 text-left">Status</th>
+                                    <th className="p-4 text-left">Location</th>
+                                    <th className="p-4 text-left">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {drivers && drivers.map((driver, index) => {
+                                    const driverId = driver.id || driver._id || (index + 1).toString();
+                                    const driverName = driver.name || driver.username || 'N/A';
+                                    const driverEmail = driver.email || 'N/A';
+                                    const driverCreatedAt = driver.createdAt
+                                        ? new Date(driver.createdAt).toLocaleDateString()
+                                        : 'N/A';
+                                    const driverMobile = driver.phone || driver.mobile || 'N/A';
+                                    const driverStatus = driver.status || 'PENDING';
+                                    const driverLocation = driver.location && driver.location.coordinates 
+                                        ? `${driver.location.coordinates[0]}, ${driver.location.coordinates[1]}`
+                                        : driver.address || 'N/A';
 
-                                const driverId = driver.id || driver._id || (index + 1).toString();
-                                const driverName = driver.name || 'N/A';
-                                const driverEmail = driver.email || 'N/A';
-                                const driverCreatedAt = driver.createdAt
-                                    ? new Date(driver.createdAt).toLocaleDateString()
-                                    : 'N/A';
-                                const driverMobile = driver.mobile || 'N/A';
-                                const driverStatus = driver.status || 'PENDING';
-                                const driverLocation = driver.location || 'N/A';
-
-                                return (
-                                    <tr key={driverId} className="border-b">
-                                        <td className="p-4">{driverId}</td>
-                                        <td className="p-4">{driverName}</td>
-                                        <td className="p-4">{driverEmail}</td>
-                                        <td className="p-4">{driverCreatedAt}</td>
-                                        <td className="p-4">{driverMobile}</td>
-                                        <td className="p-4">{driverStatus}</td>
-                                        <td className="p-4">{driverLocation}</td>
-                                        <td className="p-4">
-                                            <div className="flex gap-2">
-                                                <button className="p-1 hover:bg-gray-100 rounded">
-                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                        <circle cx="12" cy="12" r="1" /><circle cx="12" cy="5" r="1" /><circle cx="12" cy="19" r="1" />
-                                                    </svg>
-                                                </button>
-                                                <button className="p-1 text-red-500 hover:bg-red-50 rounded">
-                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
+                                    return (
+                                        <tr key={driverId} className="border-b">
+                                            <td className="p-4">{driverId}</td>
+                                            <td className="p-4">{driverName}</td>
+                                            <td className="p-4">{driverEmail}</td>
+                                            <td className="p-4">{driverCreatedAt}</td>
+                                            <td className="p-4">{driverMobile}</td>
+                                            <td className="p-4">{driverStatus}</td>
+                                            <td className="p-4">{driverLocation}</td>
+                                            <td className="p-4">
+                                                <div className="flex gap-2">
+                                                    <button 
+                                                        onClick={() => handleDriverVerification(driverId, driverLocation)}
+                                                        className="p-1 text-green-500 hover:bg-green-50 rounded"
+                                                    >
+                                                        <MapPin className="w-5 h-5" />
+                                                    </button>
+                                                    <button className="p-1 hover:bg-gray-100 rounded">
+                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                            <circle cx="12" cy="12" r="1" /><circle cx="12" cy="5" r="1" /><circle cx="12" cy="19" r="1" />
+                                                        </svg>
+                                                    </button>
+                                                    <button className="p-1 text-red-500 hover:bg-red-50 rounded">
+                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                            <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

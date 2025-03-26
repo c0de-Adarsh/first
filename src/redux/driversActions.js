@@ -8,11 +8,32 @@ export const fetchAllDrivers = () => async (dispatch) => {
       
       const response = await axios.get("https://canada.plotinlucknow.com/v1/api/getAllDriver");
       const { data } = response;
-        console.log(response)
+       
       dispatch(getDriversSuccess(data.data));
-      toast.success("Drivers fetched successfully!");
+      
     } catch (error) {
       dispatch(getDriversFail(error.response?.data?.message || "Failed to fetch drivers"));
       toast.error(error.response?.data?.message || "Failed to fetch drivers");
     }
   };
+
+
+
+  export const verifyDriver = (id) => async (dispatch) => {
+    try {
+      dispatch(getDriversRequest()); 
+  
+      const response = await axios.post(`https://canada.plotinlucknow.com/v1/api/verifydriver/${id}`);
+      const { data } = response; 
+  
+      console.log('verify driver',response); 
+  
+      dispatch(getDriversSuccess(data.data)); 
+      
+      
+    } catch (error) {
+      console.log(error.response.data.message)
+      dispatch(getDriversFail(error.response?.data?.message || "Failed to verify driver"));
+      toast.error(error.response?.data?.message || "Failed to verify driver");
+    }
+  }

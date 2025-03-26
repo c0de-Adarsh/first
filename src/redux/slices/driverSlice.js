@@ -4,7 +4,7 @@ const driversSlice = createSlice({
   name: "drivers",
   initialState: {
     loading: false,
-    drivers: [],
+    drivers: null,
     error: null,
     message: null,
   },

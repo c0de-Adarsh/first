@@ -11,7 +11,7 @@ export const loginUser = (userData) => async (dispatch) => {
       const response = await axios.post("https://canada.plotinlucknow.com/v1/api/login", userData);
       const { data } = response;  
   
-      console.log("Token:", data.data.token); 
+     
   
       dispatch(loginSuccess(data.data));
       
