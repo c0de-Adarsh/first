@@ -73,7 +73,7 @@ export default function Transporter({ moduleName = "Transporter" }) {
         },
         {
             label: "Transporter",
-            path: "/transporter",
+            path: "/dashboard/transporter",
             icon: <Truck className="w-5 h-5" />
         },
         {
