@@ -30,6 +30,7 @@ export const fetchAllDrivers = () => async (dispatch) => {
   
       dispatch(getDriversSuccess(data.data)); 
       
+      return response
       
     } catch (error) {
       console.log(error.response.data.message)
