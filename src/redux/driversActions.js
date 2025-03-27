@@ -9,6 +9,7 @@ export const fetchAllDrivers = () => async (dispatch) => {
       const response = await axios.get("https://canada.plotinlucknow.com/v1/api/getAllDriver");
       const { data } = response;
        
+      console.log(response)
       dispatch(getDriversSuccess(data.data));
       
     } catch (error) {

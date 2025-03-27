@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { loginUser } from "@/redux/userActions";
 
 export default function Login() {
-
   const router = useRouter();
   const dispatch = useDispatch();
   
@@ -33,51 +32,58 @@ export default function Login() {
   }, [isAuthenticated, router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f8f9ff]">
-      <div className="w-full max-w-[420px] bg-white rounded-[24px] p-8 mx-4 border border-blue-400">
-        <h1 className="text-[32px] font-bold text-center mb-8">Welcome</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-200 via-blue-100 to-white p-4">
+      <div className="w-full max-w-[420px] bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-2 border-blue-200 transform transition-all duration-300">
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold text-blue-900">
+            Welcome Back
+          </h1>
+          <p className="mt-2 text-gray-900 font-medium">Sign in to continue </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="relative">
-            <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="relative group">
+            <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-700 h-5 w-5 transition-colors" />
             <input
               type="text"
               name="phone"
               value={userData.phone}
               onChange={handleChange}
-              placeholder="Number"
-              className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-blue-500"
+              placeholder="Phone Number"
+              className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-blue-200 bg-white text-gray-900 placeholder:text-gray-600 transition-all focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 hover:border-blue-300"
               required
             />
           </div>
 
-          <div className="relative">
-            <KeyRound className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <div className="relative group">
+            <KeyRound className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-700 h-5 w-5 transition-colors" />
             <input
               type="password"
               name="password"
               value={userData.password}
               onChange={handleChange}
               placeholder="Password"
-              className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-blue-500"
+              className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-blue-200 bg-white text-gray-900 placeholder:text-gray-600 transition-all focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 hover:border-blue-300"
               required
             />
           </div>
 
-          <div className="flex items-center justify-between mt-6">
-            <div className="text-[24px] font-semibold">Sign in</div>
+          <div className="flex items-center justify-between pt-2">
+            <div className="text-2xl font-bold text-blue-900">
+              Sign in
+            </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
               <button
                 type="button"
-                className="text-sm font-semibold text-gray-600 hover:text-gray-800"
+                className="text-sm font-semibold text-blue-800 hover:text-blue-900 transition-colors"
               >
-                Forget Password
+                Forgot Password?
               </button>
 
               <button
                 type="submit"
-                className="bg-[#4c7bff] hover:bg-blue-600 text-white p-3 rounded-full transition-colors flex items-center justify-center"
+                className="bg-blue-800 hover:bg-blue-900 text-white p-4 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none shadow-lg shadow-blue-300/50"
                 disabled={loading}
               >
                 {loading ? (
@@ -89,6 +95,8 @@ export default function Login() {
             </div>
           </div>
         </form>
+
+      
       </div>
     </div>
   );
