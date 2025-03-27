@@ -14,12 +14,15 @@ const driversSlice = createSlice({
     },
     getDriversSuccess: (state, action) => {
       state.loading = false;
-      // Ensure drivers is always an array
-      state.drivers = Array.isArray(action.payload) 
+      // Ensure drivers is always an array and has a consistent status
+      state.drivers = (Array.isArray(action.payload) 
         ? action.payload 
         : action.payload 
           ? [action.payload] 
-          : [];
+          : []).map(driver => ({
+            ...driver,
+            status: driver.status || 'PENDING' // Ensure status is always set
+          }));
     },
  
     getDriversFail: (state, action) => {
@@ -59,6 +62,21 @@ const driversSlice = createSlice({
           state.drivers[driverIndex].status = 'VERIFIED';
       }
   },
+  updateDriverStatusInStore: (state, action) => {
+    const { id, status } = action.payload;
+    const driverIndex = state.drivers.findIndex(driver => 
+      driver.id === id || driver._id === id
+    );
+    
+    if (driverIndex !== -1) {
+      // Create a new array to trigger re-render
+      state.drivers = state.drivers.map((driver, index) => 
+        index === driverIndex 
+          ? { ...driver, status: status } 
+          : driver
+      );
+    }
+  }
   },
 });
 
@@ -67,6 +85,8 @@ export const {
   getDriversSuccess,
   getDriversFail,
   clearErrors,
+  verifyDriverSuccess,
+  updateDriverStatusInStore,
   clearMessages,
   getDriverDetailsRequest,
   getDriverDetailsSuccess,
