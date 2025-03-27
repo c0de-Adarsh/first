@@ -287,7 +287,7 @@ export default function Transporter({ moduleName = "Transporter" }) {
 
                         {isDriverModalOpen && selectedDriver && (
                 <div 
-                    className="fixed inset-0 z-50 flex items-center justify-center"
+                    className="fixed inset-0 bg-[rgba(0,0,0,0.5)] z-50 flex items-center justify-center"
                     onClick={() => setIsDriverModalOpen(false)}
                 >
                     <div 
