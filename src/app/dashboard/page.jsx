@@ -29,63 +29,25 @@ export default function Dashboard({ moduleName = "Dashboard" }) {
         }, 2000); 
     };
 
-    // Navigation handler
     const handleNavigation = (path) => {
         router.push(path);
         setIsMenuOpen(false);
     };
 
     const menuItems = [
-        { 
-            label: "Dashboard", 
-            path: "/dashboard", 
-            icon: <BarChart3 className="w-5 h-5" /> 
-        },
-        { 
-            label: "User Management", 
-            path: "/user-management", 
-            icon: <Users className="w-5 h-5" /> 
-        },
-        { 
-            label: "Transporter", 
-            path: "/dashboard/transporter", 
-            icon: <Truck className="w-5 h-5" /> 
-        },
-        { 
-            label: "Truck Type", 
-            path: "/truck-type", 
-            icon: <Truck className="w-5 h-5" /> 
-        },
-        { 
-            label: "Load Type", 
-            path: "/load-type", 
-            icon: <Truck className="w-5 h-5" /> 
-        },
-        { 
-            label: "Unit", 
-            path: "/unit", 
-            icon: <Truck className="w-5 h-5" /> 
-        },
-        { 
-            label: "Service Fee", 
-            path: "/service-fee", 
-            icon: <BarChart3 className="w-5 h-5" /> 
-        },
-        { 
-            label: "Sub Admin", 
-            path: "/sub-admin", 
-            icon: <User className="w-5 h-5" /> 
-        },
-        { 
-            label: "Activity Report", 
-            path: "/activity-report", 
-            icon: <BarChart3 className="w-5 h-5" /> 
-        }
+        { label: "Dashboard", path: "/dashboard", icon: <BarChart3 className="w-5 h-5" /> },
+        { label: "User Management", path: "/user-management", icon: <Users className="w-5 h-5" /> },
+        { label: "Transporter", path: "/dashboard/transporter", icon: <Truck className="w-5 h-5" /> },
+        { label: "Truck Type", path: "/truck-type", icon: <Truck className="w-5 h-5" /> },
+        { label: "Load Type", path: "/load-type", icon: <Truck className="w-5 h-5" /> },
+        { label: "Unit", path: "/unit", icon: <Truck className="w-5 h-5" /> },
+        { label: "Service Fee", path: "/service-fee", icon: <BarChart3 className="w-5 h-5" /> },
+        { label: "Sub Admin", path: "/sub-admin", icon: <User className="w-5 h-5" /> },
+        { label: "Activity Report", path: "/activity-report", icon: <BarChart3 className="w-5 h-5" /> }
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Overlay for mobile menu */}
+        <div className="min-h-screen bg-gray-100">
             {isMenuOpen && (
                 <div 
                     className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
@@ -93,15 +55,12 @@ export default function Dashboard({ moduleName = "Dashboard" }) {
                 />
             )}
 
-            {/* Sidebar */}
-            <aside
-                className={`${
-                    isMenuOpen ? "translate-x-0" : "-translate-x-full"
-                } fixed top-0 left-0 z-40 w-64 h-screen transition-transform md:translate-x-0 bg-white shadow-lg`}
-            >
-                <div className="p-4 border-b">
+            <aside className={`${
+                isMenuOpen ? "translate-x-0" : "-translate-x-full"
+            } fixed top-0 left-0 z-40 w-64 h-screen transition-transform md:translate-x-0 bg-white shadow-xl`}>
+                <div className="p-4 border-b border-gray-200">
                     <div className="h-12 flex items-center justify-center">
-                        <img src="/images/ds.png" alt="" />
+                        <img src="/images/ds.png" alt="" className="h-full" />
                     </div>
                 </div>
                 <nav className="p-4 space-y-2">
@@ -111,21 +70,19 @@ export default function Dashboard({ moduleName = "Dashboard" }) {
                             onClick={() => handleNavigation(item.path)}
                             className={`w-full text-left flex items-center p-3 rounded-lg transition-colors duration-200 ${
                                 index === 0 
-                                    ? "bg-blue-500 text-white" 
-                                    : "text-gray-900 hover:bg-gray-100"
+                                    ? "bg-blue-600 text-white font-medium" 
+                                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                             }`}
                         >
                             {item.icon}
-                            <span className="ml-3">{item.label}</span>
+                            <span className="ml-3 font-medium">{item.label}</span>
                         </button>
                     ))}
                 </nav>
             </aside>
 
-            {/* Main Content */}
             <div className="md:ml-64 min-h-screen flex flex-col">
-                {/* Header */}
-                <header className="bg-white shadow-sm sticky top-0 z-20">
+                <header className="bg-white shadow-md sticky top-0 z-20">
                     <div className="max-w-7xl mx-auto">
                         <div className="flex flex-col space-y-4 p-4 md:flex-row md:items-center md:justify-between md:space-y-0">
                             <div className="flex items-center justify-between">
@@ -134,18 +91,18 @@ export default function Dashboard({ moduleName = "Dashboard" }) {
                                     className="p-2 rounded-lg md:hidden hover:bg-gray-100"
                                 >
                                     {isMenuOpen ? (
-                                        <X className="w-6 h-6" />
+                                        <X className="w-6 h-6 text-gray-700" />
                                     ) : (
-                                        <Menu className="w-6 h-6" />
+                                        <Menu className="w-6 h-6 text-gray-700" />
                                     )}
                                 </button>
-                                <h1 className="text-2xl font-bold">{moduleName} Dashboard</h1>
+                                <h1 className="text-2xl font-bold text-gray-900">{moduleName} Dashboard</h1>
                                 <div className="flex items-center gap-3 md:hidden">
                                     <button className="p-2 hover:bg-gray-100 rounded-full">
-                                        <Bell className="w-6 h-6" />
+                                        <Bell className="w-6 h-6 text-gray-700" />
                                     </button>
                                     <button className="p-2 hover:bg-gray-100 rounded-full">
-                                        <User className="w-6 h-6" />
+                                        <User className="w-6 h-6 text-gray-700" />
                                     </button>
                                 </div>
                             </div>
@@ -154,29 +111,29 @@ export default function Dashboard({ moduleName = "Dashboard" }) {
                                 <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-2">
                                     <input
                                         type="date"
-                                        className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="p-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                                         placeholder="From"
                                     />
                                     <input
                                         type="date"
-                                        className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="p-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                                         placeholder="To"
                                     />
-                                    <button className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors duration-200">
+                                    <button className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium shadow-md">
                                         Apply
                                     </button>
                                 </div>
                                 <div className="hidden md:flex items-center gap-3">
                                     <button className="p-2 hover:bg-gray-100 rounded-full">
-                                        <Bell className="w-6 h-6" />
+                                        <Bell className="w-6 h-6 text-gray-700" />
                                     </button>
                                     <button className="p-2 hover:bg-gray-100 rounded-full">
-                                        <User className="w-6 h-6" />
+                                        <User className="w-6 h-6 text-gray-700" />
                                     </button>
                                 </div>
                                 <button 
                                     onClick={handleLogout} 
-                                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
+                                    className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium shadow-md"
                                 >
                                     Sign Out
                                 </button>
@@ -185,62 +142,60 @@ export default function Dashboard({ moduleName = "Dashboard" }) {
                     </div>
                 </header>
 
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+                <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">Total Users</p>
-                                <h3 className="text-2xl font-bold">15</h3>
+                                <p className="text-sm font-medium text-gray-600">Total Users</p>
+                                <h3 className="text-3xl font-bold text-gray-900 mt-1">15</h3>
                             </div>
                             <div className="p-3 bg-blue-100 rounded-full">
-                                <Users className="w-6 h-6 text-blue-500" />
+                                <Users className="w-7 h-7 text-blue-600" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+                    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">Total Transporter</p>
-                                <h3 className="text-2xl font-bold">13</h3>
+                                <p className="text-sm font-medium text-gray-600">Total Transporter</p>
+                                <h3 className="text-3xl font-bold text-gray-900 mt-1">13</h3>
                             </div>
                             <div className="p-3 bg-yellow-100 rounded-full">
-                                <Truck className="w-6 h-6 text-yellow-500" />
+                                <Truck className="w-7 h-7 text-yellow-600" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+                    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">Total Transactions ETB</p>
-                                <h3 className="text-2xl font-bold">927,579</h3>
+                                <p className="text-sm font-medium text-gray-600">Total Transactions ETB</p>
+                                <h3 className="text-3xl font-bold text-gray-900 mt-1">927,579</h3>
                             </div>
                             <div className="p-3 bg-green-100 rounded-full">
-                                <BarChart3 className="w-6 h-6 text-green-500" />
+                                <BarChart3 className="w-7 h-7 text-green-600" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+                    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">Total Commission ETB</p>
-                                <h3 className="text-2xl font-bold">1,825</h3>
+                                <p className="text-sm font-medium text-gray-600">Total Commission ETB</p>
+                                <h3 className="text-3xl font-bold text-gray-900 mt-1">1,825</h3>
                             </div>
                             <div className="p-3 bg-red-100 rounded-full">
-                                <Clock className="w-6 h-6 text-red-500" />
+                                <Clock className="w-7 h-7 text-red-600" />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Chart Section */}
-                <div className="p-4 flex-grow">
-                    <div className="p-6 bg-white rounded-lg shadow-md h-full">
-                        <h3 className="mb-4 text-lg font-semibold">Total Users</h3>
-                        <div className="h-[calc(100%-2rem)] min-h-[300px] bg-gray-50 rounded-lg"></div>
+                <div className="p-6 flex-grow">
+                    <div className="p-6 bg-white rounded-xl shadow-lg h-full">
+                        <h3 className="text-xl font-bold text-gray-900 mb-6">Total Users</h3>
+                        <div className="h-[calc(100%-2rem)] min-h-[300px] bg-gray-50 rounded-xl border-2 border-gray-200"></div>
                     </div>
                 </div>
             </div>

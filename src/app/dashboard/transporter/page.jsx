@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, X, Users, Truck, BarChart3, Clock, Bell, User, MapPin, MarsStroke, Info } from "lucide-react";
+import { Menu, X, Users, Truck, BarChart3, Clock, Bell, User, MapPin, Stars as MarsStroke, Info } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify";
@@ -19,7 +19,6 @@ export default function Transporter({ moduleName = "Transporter" }) {
         if (!isAuthenticated) {
             router.replace("/");
         }
-
         dispatch(fetchAllDrivers());
     }, [isAuthenticated, router]);
 
@@ -56,94 +55,54 @@ export default function Transporter({ moduleName = "Transporter" }) {
     };
 
     const menuItems = [
-        {
-            label: "Dashboard",
-            path: "/dashboard/food",
-            icon: <BarChart3 className="w-5 h-5" />
-        },
-        {
-            label: "User Management",
-            path: "/dashboard/user-management",
-            icon: <Users className="w-5 h-5" />
-        },
-        {
-            label: "Transporter",
-            path: "/dashboard/transporter",
-            icon: <Truck className="w-5 h-5" />
-        },
-        {
-            label: "Truck Type",
-            path: "/truck-type",
-            icon: <Truck className="w-5 h-5" />
-        },
-        {
-            label: "Load Type",
-            path: "/load-type",
-            icon: <Truck className="w-5 h-5" />
-        },
-        {
-            label: "Unit",
-            path: "/unit",
-            icon: <Truck className="w-5 h-5" />
-        },
-        {
-            label: "Service Fee",
-            path: "/service-fee",
-            icon: <BarChart3 className="w-5 h-5" />
-        },
-        {
-            label: "Sub Admin",
-            path: "/sub-admin",
-            icon: <User className="w-5 h-5" />
-        },
-        {
-            label: "Activity Report",
-            path: "/activity-report",
-            icon: <BarChart3 className="w-5 h-5" />
-        }
+        { label: "Dashboard", path: "/dashboard/food", icon: <BarChart3 className="w-5 h-5" /> },
+        { label: "User Management", path: "/dashboard/user-management", icon: <Users className="w-5 h-5" /> },
+        { label: "Transporter", path: "/dashboard/transporter", icon: <Truck className="w-5 h-5" /> },
+        { label: "Truck Type", path: "/truck-type", icon: <Truck className="w-5 h-5" /> },
+        { label: "Load Type", path: "/load-type", icon: <Truck className="w-5 h-5" /> },
+        { label: "Unit", path: "/unit", icon: <Truck className="w-5 h-5" /> },
+        { label: "Service Fee", path: "/service-fee", icon: <BarChart3 className="w-5 h-5" /> },
+        { label: "Sub Admin", path: "/sub-admin", icon: <User className="w-5 h-5" /> },
+        { label: "Activity Report", path: "/activity-report", icon: <BarChart3 className="w-5 h-5" /> }
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Overlay for mobile menu */}
+        <div className="min-h-screen bg-gray-100">
             {isMenuOpen && (
-                <div
+                <div 
                     className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
                     onClick={() => setIsMenuOpen(false)}
                 />
             )}
 
-            {/* Sidebar */}
-            <aside
-                className={`${isMenuOpen ? "translate-x-0" : "-translate-x-full"
-                    } fixed top-0 left-0 z-40 w-64 h-screen transition-transform md:translate-x-0 bg-white shadow-lg`}
-            >
-                <div className="p-4 border-b">
+            <aside className={`${
+                isMenuOpen ? "translate-x-0" : "-translate-x-full"
+            } fixed top-0 left-0 z-40 w-64 h-screen transition-transform md:translate-x-0 bg-white shadow-xl`}>
+                <div className="p-4 border-b border-gray-200">
                     <div className="h-12 flex items-center justify-center">
-                        <img src="/images/ds.png" alt="" />
+                        <img src="/images/ds.png" alt="" className="h-full" />
                     </div>
                 </div>
                 <nav className="p-4 space-y-2">
-                    {menuItems.map((item, index) => (
+                    {menuItems.map((item) => (
                         <button
                             key={item.label}
                             onClick={() => handleNavigation(item.path)}
-                            className={`w-full text-left flex items-center p-3 rounded-lg transition-colors duration-200 ${item.label === "Transporter"
-                                    ? "bg-blue-500 text-white"
-                                    : "text-gray-900 hover:bg-gray-100"
-                                }`}
+                            className={`w-full text-left flex items-center p-3 rounded-lg transition-colors duration-200 ${
+                                item.label === "Transporter"
+                                    ? "bg-blue-600 text-white font-medium" 
+                                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                            }`}
                         >
                             {item.icon}
-                            <span className="ml-3">{item.label}</span>
+                            <span className="ml-3 font-medium">{item.label}</span>
                         </button>
                     ))}
                 </nav>
             </aside>
 
-            {/* Main Content */}
             <div className="md:ml-64 min-h-screen flex flex-col">
-                {/* Header */}
-                <header className="bg-white shadow-sm sticky top-0 z-20">
+                <header className="bg-white shadow-md sticky top-0 z-20">
                     <div className="max-w-7xl mx-auto">
                         <div className="flex flex-col space-y-4 p-4 md:flex-row md:items-center md:justify-between md:space-y-0">
                             <div className="flex items-center justify-between">
@@ -152,18 +111,18 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                     className="p-2 rounded-lg md:hidden hover:bg-gray-100"
                                 >
                                     {isMenuOpen ? (
-                                        <X className="w-6 h-6" />
+                                        <X className="w-6 h-6 text-gray-700" />
                                     ) : (
-                                        <Menu className="w-6 h-6" />
+                                        <Menu className="w-6 h-6 text-gray-700" />
                                     )}
                                 </button>
-                                <h1 className="text-2xl font-bold">{moduleName} Dashboard</h1>
+                                <h1 className="text-2xl font-bold text-gray-900">{moduleName} Dashboard</h1>
                                 <div className="flex items-center gap-3 md:hidden">
                                     <button className="p-2 hover:bg-gray-100 rounded-full">
-                                        <Bell className="w-6 h-6" />
+                                        <Bell className="w-6 h-6 text-gray-700" />
                                     </button>
                                     <button className="p-2 hover:bg-gray-100 rounded-full">
-                                        <User className="w-6 h-6" />
+                                        <User className="w-6 h-6 text-gray-700" />
                                     </button>
                                 </div>
                             </div>
@@ -172,29 +131,29 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                 <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-2">
                                     <input
                                         type="date"
-                                        className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="p-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                                         placeholder="From"
                                     />
                                     <input
                                         type="date"
-                                        className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="p-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                                         placeholder="To"
                                     />
-                                    <button className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors duration-200">
+                                    <button className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium shadow-md">
                                         Apply
                                     </button>
                                 </div>
                                 <div className="hidden md:flex items-center gap-3">
                                     <button className="p-2 hover:bg-gray-100 rounded-full">
-                                        <Bell className="w-6 h-6" />
+                                        <Bell className="w-6 h-6 text-gray-700" />
                                     </button>
                                     <button className="p-2 hover:bg-gray-100 rounded-full">
-                                        <User className="w-6 h-6" />
+                                        <User className="w-6 h-6 text-gray-700" />
                                     </button>
                                 </div>
-                                <button
-                                    onClick={handleLogout}
-                                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
+                                <button 
+                                    onClick={handleLogout} 
+                                    className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium shadow-md"
                                 >
                                     Sign Out
                                 </button>
@@ -203,95 +162,93 @@ export default function Transporter({ moduleName = "Transporter" }) {
                     </div>
                 </header>
 
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+                <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">Total Users</p>
-                                <h3 className="text-2xl font-bold">15</h3>
+                                <p className="text-sm font-medium text-gray-600">Total Users</p>
+                                <h3 className="text-3xl font-bold text-gray-900 mt-1">15</h3>
                             </div>
                             <div className="p-3 bg-blue-100 rounded-full">
-                                <Users className="w-6 h-6 text-blue-500" />
+                                <Users className="w-7 h-7 text-blue-600" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+                    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">Total Transporter</p>
-                                <h3 className="text-2xl font-bold">13</h3>
+                                <p className="text-sm font-medium text-gray-600">Total Transporter</p>
+                                <h3 className="text-3xl font-bold text-gray-900 mt-1">13</h3>
                             </div>
                             <div className="p-3 bg-yellow-100 rounded-full">
-                                <Truck className="w-6 h-6 text-yellow-500" />
+                                <Truck className="w-7 h-7 text-yellow-600" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+                    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">Total Transactions ETB</p>
-                                <h3 className="text-2xl font-bold">927,579</h3>
+                                <p className="text-sm font-medium text-gray-600">Total Transactions ETB</p>
+                                <h3 className="text-3xl font-bold text-gray-900 mt-1">927,579</h3>
                             </div>
                             <div className="p-3 bg-green-100 rounded-full">
-                                <BarChart3 className="w-6 h-6 text-green-500" />
+                                <BarChart3 className="w-7 h-7 text-green-600" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+                    <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">Total Commission ETB</p>
-                                <h3 className="text-2xl font-bold">1,825</h3>
+                                <p className="text-sm font-medium text-gray-600">Total Commission ETB</p>
+                                <h3 className="text-3xl font-bold text-gray-900 mt-1">1,825</h3>
                             </div>
                             <div className="p-3 bg-red-100 rounded-full">
-                                <Clock className="w-6 h-6 text-red-500" />
+                                <Clock className="w-7 h-7 text-red-600" />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Transporter Section */}
-                <div className="p-4">
-                    <div className="bg-white p-6 rounded-lg shadow-md">
-                        <div className="mb-4">
-                            <h2 className="text-xl font-bold">Transporter</h2>
+                <div className="p-6">
+                    <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="mb-6">
+                            <h2 className="text-2xl font-bold text-gray-900">Transporter</h2>
                         </div>
-                        <div className="flex flex-col md:flex-row gap-4 mb-4">
+                        <div className="flex flex-col md:flex-row gap-4 mb-6">
                             <div className="flex items-center gap-2">
-                                <button className="p-2 hover:bg-gray-100 rounded-lg">
+                                <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-700">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M3 6h18M6 12h12M9 18h6" />
                                     </svg>
                                 </button>
-                                <span>Filter By</span>
+                                <span className="font-medium text-gray-700">Filter By</span>
                             </div>
                             <input
                                 type="date"
-                                className="p-2 border rounded-lg"
+                                className="p-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                             />
                         </div>
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto rounded-lg border border-gray-200">
                             <table className="w-full">
-                                <thead>
+                                <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="p-4 text-left">ID</th>
-                                        <th className="p-4 text-left">Name</th>
-                                        <th className="p-4 text-left">Email</th>
-                                        <th className="p-4 text-left">Created At</th>
-                                        <th className="p-4 text-left">Mobile</th>
-                                        <th className="p-4 text-left">Status</th>
-                                        <th className="p-4 text-left">Location</th>
-                                        <th className="p-4 text-left">Actions</th>
+                                        <th className="p-4 text-left text-sm font-semibold text-gray-900">ID</th>
+                                        <th className="p-4 text-left text-sm font-semibold text-gray-900">Name</th>
+                                        <th className="p-4 text-left text-sm font-semibold text-gray-900">Email</th>
+                                        <th className="p-4 text-left text-sm font-semibold text-gray-900">Created At</th>
+                                        <th className="p-4 text-left text-sm font-semibold text-gray-900">Mobile</th>
+                                        <th className="p-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                                        <th className="p-4 text-left text-sm font-semibold text-gray-900">Location</th>
+                                        <th className="p-4 text-left text-sm font-semibold text-gray-900">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="divide-y divide-gray-200">
                                     {driversLoading ? (
                                         <tr>
-                                            <td colSpan="8" className="text-center p-4">
+                                            <td colSpan="8" className="text-center p-4 text-gray-500">
                                                 Loading drivers...
                                             </td>
                                         </tr>
@@ -310,26 +267,41 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                                 : driver.address || 'N/A';
 
                                             return (
-                                                <tr key={driverId} className="border-b">
-                                                    <td className="p-4">{driverId}</td>
-                                                    <td className="p-4">{driverName}</td>
-                                                    <td className="p-4">{driverEmail}</td>
-                                                    <td className="p-4">{driverCreatedAt}</td>
-                                                    <td className="p-4">{driverMobile}</td>
-                                                    <td className="p-4">{driverStatus}</td>
-                                                    <td className="p-4">{driverLocation}</td>
+                                                <tr key={driverId} className="hover:bg-gray-50">
+                                                    <td className="p-4 text-sm text-gray-900">{driverId}</td>
+                                                    <td className="p-4 text-sm text-gray-900 font-medium">{driverName}</td>
+                                                    <td className="p-4 text-sm text-gray-600">{driverEmail}</td>
+                                                    <td className="p-4 text-sm text-gray-600">{driverCreatedAt}</td>
+                                                    <td className="p-4 text-sm text-gray-600">{driverMobile}</td>
+                                                    <td className="p-4">
+                                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                                            driverStatus === 'PENDING' 
+                                                                ? 'bg-yellow-100 text-yellow-800'
+                                                                : 'bg-green-100 text-green-800'
+                                                        }`}>
+                                                            {driverStatus}
+                                                        </span>
+                                                    </td>
+                                                    <td className="p-4 text-sm text-gray-600">{driverLocation}</td>
                                                     <td className="p-4">
                                                         <div className="flex gap-2">
                                                             <button 
                                                                 onClick={() => handleDriverVerification(driverId, driverLocation)}
-                                                                className="p-1 text-green-500 hover:bg-green-50 rounded"
+                                                                className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                                                                title="View Location"
                                                             >
                                                                 <MapPin className="w-5 h-5" />
                                                             </button>
-                                                            <button className="p-1 hover:bg-gray-100 rounded">
-                                                                <Info/>
+                                                            <button 
+                                                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                                title="View Details"
+                                                            >
+                                                                <Info className="w-5 h-5" />
                                                             </button>
-                                                            <button className="p-1 text-red-500 hover:bg-red-50 rounded">
+                                                            <button 
+                                                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                                title="Delete"
+                                                            >
                                                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                                                     <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
                                                                 </svg>
@@ -341,7 +313,7 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                         })
                                     ) : (
                                         <tr>
-                                            <td colSpan="8" className="text-center p-4">
+                                            <td colSpan="8" className="text-center p-4 text-gray-500">
                                                 No drivers found
                                             </td>
                                         </tr>
