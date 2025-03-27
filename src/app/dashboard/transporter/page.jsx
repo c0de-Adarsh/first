@@ -1,19 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, X, Users, Truck, BarChart3, Clock, Bell, User, MapPin, Stars as MarsStroke, Info } from "lucide-react";
+import { Menu, X, Users, Truck, BarChart3, Clock, Bell, User, MapPin, Stars as MarsStroke, Info, Check, XCircle  } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify";
-import { fetchAllDrivers, verifyDriver } from "@/redux/driversActions";
+import { fetchAllDrivers, fetchDriverDetails, verifyDriver } from "@/redux/driversActions";
 import { clearMessages, logoutSuccess } from "@/redux/slices/userSlice";
 
 export default function Transporter({ moduleName = "Transporter" }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [selectedDriver, setSelectedDriver] = useState(null);
+    const [isDriverModalOpen, setIsDriverModalOpen] = useState(false);
     const router = useRouter();
     const dispatch = useDispatch()
     const { isAuthenticated, loading } = useSelector((state) => state.user);
-    const { drivers, loading: driversLoading, error: driversError } = useSelector((state) => state.drivers);
+    const { 
+        drivers, 
+        loading: driversLoading, 
+        error: driversError,
+        selectedDriverDetails 
+    } = useSelector((state) => state.drivers);
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -38,22 +45,49 @@ export default function Transporter({ moduleName = "Transporter" }) {
     };
 
     const handleDriverVerification = (driverId, location) => {
-        dispatch(verifyDriver(driverId));
-
-        if (location && location !== 'N/A') {
-            const [latitude, longitude] = location.split(',').map(coord => coord.trim());
-            const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
-            window.open(googleMapsUrl, '_blank');
-        } else {
-            toast.error("Location information is not available");
-        }
+        dispatch(verifyDriver(driverId)).then(() => {
+            if (location && location !== 'N/A') {
+                const [latitude, longitude] = location.split(',').map(coord => coord.trim());
+                const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+                window.open(googleMapsUrl, '_blank');
+            } else {
+                toast.error("Location information is not available");
+            }
+        }).catch((error) => {
+            // Error handling is already done in the action, but you can add additional logic if needed
+            console.error("Verification failed", error);
+        });
     };
 
+
+
+    const openDriverModal = (driver) => {
+        dispatch(fetchDriverDetails(driver.id || driver._id));
+        
+        setSelectedDriver({
+            ...driver,
+            totalRides: 80,
+            totalEarnings: 150
+        });
+        setIsDriverModalOpen(true);
+    };
+
+    const handleVerifyDriver = () => {
+        if (selectedDriver) {
+            dispatch(verifyDriver(selectedDriver.id || selectedDriver._id));
+            toast.success('Driver verified successfully');
+            setIsDriverModalOpen(false);
+        }
+    };
     const handleNavigation = (path) => {
         router.push(path);
         setIsMenuOpen(false);
     };
 
+    const handleSuspendDriver = () => {
+        toast.warning('Driver suspended');
+        setIsDriverModalOpen(false);
+    };
     const menuItems = [
         { label: "Dashboard", path: "/dashboard/food", icon: <BarChart3 className="w-5 h-5" /> },
         { label: "User Management", path: "/dashboard/user-management", icon: <Users className="w-5 h-5" /> },
@@ -231,6 +265,110 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                 className="p-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                             />
                         </div>
+
+                        {isDriverModalOpen && selectedDriver && (
+                <div 
+                    className="fixed inset-0 bg-opacity-20  z-50 flex items-center justify-center"
+                    onClick={() => setIsDriverModalOpen(false)}
+                >
+                    <div 
+                        className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-2xl mx-4"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-2xl font-bold text-gray-900">Driver Details</h2>
+                            <button 
+                                onClick={() => setIsDriverModalOpen(false)}
+                                className="text-gray-600 hover:text-gray-900"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+
+                        {isDriverModalOpen && selectedDriver && (
+                <div 
+                    className="fixed inset-0 z-50 flex items-center justify-center"
+                    onClick={() => setIsDriverModalOpen(false)}
+                >
+                    <div 
+                        className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-2xl mx-4"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-2xl font-bold text-gray-900">Driver Details</h2>
+                            <button 
+                                onClick={() => setIsDriverModalOpen(false)}
+                                className="text-gray-600 hover:text-gray-900"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+
+                        {selectedDriverDetails ? (
+                            <div className="space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p className="text-sm text-gray-900">Name</p>
+                                        <p className="  text-gray-700 ">{selectedDriverDetails.name || selectedDriverDetails.username || 'N/A'}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-900">Email</p>
+                                        <p className="  text-gray-700">{selectedDriverDetails.email || 'N/A'}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-900">Mobile</p>
+                                        <p className="  text-gray-700">{selectedDriverDetails.phone || selectedDriverDetails.mobile || 'N/A'}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-900">Truck Type</p>
+                                        <p className=" text-gray-700">{selectedDriverDetails.truckType || 'N/A'}</p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                                    <div>
+                                        <p className="text-sm text-gray-900">Total Rides</p>
+                                        <p className="text-xl   text-gray-700">{selectedDriverDetails.totalRides || 0}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-900">Total Earning</p>
+                                        <p className="text-xl  text-gray-700">ETB {selectedDriverDetails.totalEarnings || 0}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex space-x-4 pt-4">
+                                    <button 
+                                        onClick={handleVerifyDriver}
+                                        className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center"
+                                    >
+                                        <Check className="w-5 h-5 mr-2" />
+                                        Verify Driver
+                                    </button>
+                                    <button 
+                                        onClick={handleSuspendDriver}
+                                        className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center justify-center"
+                                    >
+                                        <XCircle className="w-5 h-5 mr-2" />
+                                        Suspend Driver
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="text-center py-4">
+                                <p className="text-gray-500">Loading driver details...</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+                    </div>
+                </div>
+            )}
+
+
+
+
+
                         <div className="overflow-x-auto rounded-lg border border-gray-200">
                             <table className="w-full">
                                 <thead className="bg-gray-50">
@@ -284,30 +422,31 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                                     </td>
                                                     <td className="p-4 text-sm text-gray-600">{driverLocation}</td>
                                                     <td className="p-4">
-                                                        <div className="flex gap-2">
-                                                            <button 
-                                                                onClick={() => handleDriverVerification(driverId, driverLocation)}
-                                                                className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                                                                title="View Location"
-                                                            >
-                                                                <MapPin className="w-5 h-5" />
-                                                            </button>
-                                                            <button 
-                                                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                                                title="View Details"
-                                                            >
-                                                                <Info className="w-5 h-5" />
-                                                            </button>
-                                                            <button 
-                                                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                                                title="Delete"
-                                                            >
-                                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                                    <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
-                                                                </svg>
-                                                            </button>
-                                                        </div>
-                                                    </td>
+                                            <div className="flex gap-2">
+                                                <button 
+                                                    onClick={() => handleDriverVerification(driverId, driverLocation)}
+                                                    className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                                                    title="View Location"
+                                                >
+                                                    <MapPin className="w-5 h-5" />
+                                                </button>
+                                                <button 
+                                                    onClick={() => openDriverModal(driver)}
+                                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                    title="View Details"
+                                                >
+                                                    <Info className="w-5 h-5" />
+                                                </button>
+                                                <button 
+                                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                    title="Delete"
+                                                >
+                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </td>
                                                 </tr>
                                             );
                                         })
