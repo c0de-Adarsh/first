@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "react-toastify";
 import { fetchAllDrivers, fetchDriverDetails, updateDriverStatus, verifyDriver } from "@/redux/driversActions";
 import { clearMessages, logoutSuccess } from "@/redux/slices/userSlice";
+import DriverDocumentsCarousel from "./DriverDocumentsCarousel";
 
 export default function Transporter({ moduleName = "Transporter" }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -153,6 +154,10 @@ export default function Transporter({ moduleName = "Transporter" }) {
 
         return null;
     };
+
+
+
+
     const menuItems = [
         { label: "Dashboard", path: "/dashboard/food", icon: <BarChart3 className="w-5 h-5" /> },
         { label: "User Management", path: "/dashboard/user-management", icon: <Users className="w-5 h-5" /> },
@@ -240,14 +245,14 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                         Apply
                                     </button>
                                 </div>
-                                <div className="hidden md:flex items-center gap-3">
+                                {/* <div className="hidden md:flex items-center gap-3">
                                     <button className="p-2 hover:bg-gray-100 rounded-full">
                                         <Bell className="w-6 h-6 text-gray-700" />
                                     </button>
                                     <button className="p-2 hover:bg-gray-100 rounded-full">
                                         <User className="w-6 h-6 text-gray-700" />
                                     </button>
-                                </div>
+                                </div> */}
                                 <button
                                     onClick={handleLogout}
                                     className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium shadow-md"
@@ -259,7 +264,7 @@ export default function Transporter({ moduleName = "Transporter" }) {
                     </div>
                 </header>
 
-                <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 lg:grid-cols-4">
+                {/* <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 lg:grid-cols-4">
                     <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
                         <div className="flex items-center justify-between">
                             <div>
@@ -307,7 +312,7 @@ export default function Transporter({ moduleName = "Transporter" }) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 <div className="p-6">
                     <div className="bg-white rounded-xl shadow-lg p-6">
@@ -354,7 +359,7 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                             onClick={() => setIsDriverModalOpen(false)}
                                         >
                                             <div
-                                                className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-2xl mx-4"
+                                                className="bg-white h-auto rounded-xl shadow-2xl p-6 w-full max-w-3xl mx-4"
                                                 onClick={(e) => e.stopPropagation()}
                                             >
                                                 <div className="flex justify-between items-center mb-4">
@@ -374,13 +379,16 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                                                 <p className="text-sm text-gray-900">Name</p>
                                                                 <p className="  text-gray-700 ">{selectedDriverDetails.name || selectedDriverDetails.username || 'N/A'}</p>
                                                             </div>
-                                                            <div>
-                                                                <p className="text-sm text-gray-900">Email</p>
-                                                                <p className="  text-gray-700">{selectedDriverDetails.email || 'N/A'}</p>
-                                                            </div>
+
                                                             <div>
                                                                 <p className="text-sm text-gray-900">Mobile</p>
                                                                 <p className="  text-gray-700">{selectedDriverDetails.phone || selectedDriverDetails.mobile || 'N/A'}</p>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-sm text-gray-900">dl number</p>
+                                                                <p className="  text-gray-700">{selectedDriverDetails.
+                                                                    dl_number || selectedDriverDetails.
+                                                                        dl_number || 'N/A'}</p>
                                                             </div>
                                                             <div>
                                                                 <p className="text-sm text-gray-900">Truck Type</p>
@@ -399,21 +407,49 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                                             </div>
                                                         </div>
 
-                                                        <div className="flex space-x-4 pt-4">
-                                                            <button
-                                                                onClick={handleVerifyDriver}
-                                                                className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center"
-                                                            >
-                                                                <Check className="w-5 h-5 mr-2" />
-                                                                Verify Driver
-                                                            </button>
-                                                            <button
-                                                                onClick={handleSuspendDriver}
-                                                                className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center justify-center"
-                                                            >
-                                                                <XCircle className="w-5 h-5 mr-2" />
-                                                                Suspend Driver
-                                                            </button>
+
+
+                                                        <DriverDocumentsCarousel selectedDriverDetails={selectedDriverDetails} />
+
+
+
+                                                        <div className="flex space-x-4">
+                                                            {(selectedDriverDetails?.status === 'PENDING') && (
+                                                                <>
+                                                                    <button
+                                                                        onClick={handleVerifyDriver}
+                                                                        className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center"
+                                                                    >
+                                                                        <Check className="w-5 h-5 mr-2" />
+                                                                        Verify Driver
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={handleSuspendDriver}
+                                                                        className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center justify-center"
+                                                                    >
+                                                                        <XCircle className="w-5 h-5 mr-2" />
+                                                                        Suspend Driver
+                                                                    </button>
+                                                                </>
+                                                            )}
+                                                            {(selectedDriverDetails?.status === 'SUSPENDED') && (
+                                                                <button
+                                                                    onClick={handleVerifyDriver}
+                                                                    className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center"
+                                                                >
+                                                                    <Check className="w-5 h-5 mr-2" />
+                                                                    Verify Driver
+                                                                </button>
+                                                            )}
+                                                            {(selectedDriverDetails?.status === 'VERIFIED') && (
+                                                                <button
+                                                                    onClick={handleSuspendDriver}
+                                                                    className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center justify-center"
+                                                                >
+                                                                    <XCircle className="w-5 h-5 mr-2" />
+                                                                    Suspend Driver
+                                                                </button>
+                                                            )}
                                                         </div>
                                                         {renderDriverModalButtons()}
                                                     </div>
@@ -479,10 +515,10 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                                     <td className="p-4 text-sm text-gray-600">{driverMobile}</td>
                                                     <td className="p-4">
                                                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${driverStatus === 'PENDING'
-                                                                ? 'bg-yellow-100 text-yellow-800'
-                                                                : driverStatus === 'VERIFIED'
-                                                                    ? 'bg-green-100 text-green-800'
-                                                                    : 'bg-red-100 text-red-800'
+                                                            ? 'bg-yellow-100 text-yellow-800'
+                                                            : driverStatus === 'VERIFIED'
+                                                                ? 'bg-green-100 text-green-800'
+                                                                : 'bg-red-100 text-red-800'
                                                             }`}>
                                                             {driverStatus}
                                                         </span>
