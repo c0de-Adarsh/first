@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, X, Users, Truck, BarChart3, Clock, Bell, User, MapPin } from "lucide-react";
+import { Menu, X, Users, Truck, BarChart3, Clock, Bell, User, MapPin, MarsStroke, Info } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify";
@@ -327,9 +327,7 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                                                 <MapPin className="w-5 h-5" />
                                                             </button>
                                                             <button className="p-1 hover:bg-gray-100 rounded">
-                                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                                    <circle cx="12" cy="12" r="1" /><circle cx="12" cy="5" r="1" /><circle cx="12" cy="19" r="1" />
-                                                                </svg>
+                                                                <Info/>
                                                             </button>
                                                             <button className="p-1 text-red-500 hover:bg-red-50 rounded">
                                                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
