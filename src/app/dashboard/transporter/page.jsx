@@ -226,21 +226,7 @@ export default function Transporter({ moduleName = "Transporter" }) {
                             </div>
 
                             <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
-                                <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-2">
-                                    <input
-                                        type="date"
-                                        className="p-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                                        placeholder="From"
-                                    />
-                                    <input
-                                        type="date"
-                                        className="p-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                                        placeholder="To"
-                                    />
-                                    <button className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium shadow-md">
-                                        Apply
-                                    </button>
-                                </div>
+                                
                                 {/* <div className="hidden md:flex items-center gap-3">
                                     <button className="p-2 hover:bg-gray-100 rounded-full">
                                         <Bell className="w-6 h-6 text-gray-700" />
