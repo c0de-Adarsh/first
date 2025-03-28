@@ -369,7 +369,7 @@ export default function Transporter({ moduleName = "Transporter" }) {
       </div>
 
       {selectedDriverDetails ? (
-        <div className="space-y-1">
+        <div className="space-y-2">
           <div className="grid grid-cols-4 gap-2">
             <div>
               <p className="text-[10px] text-gray-900">Name</p>
@@ -398,7 +398,7 @@ export default function Transporter({ moduleName = "Transporter" }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-2 bg-gray-50 p-1 rounded-lg">
+          <div className="grid grid-cols-4  bg-gray-50  rounded-lg">
             <div>
               <p className="text-[10px] text-gray-900">Total Rides</p>
               <p className="text-sm text-gray-700">
@@ -409,6 +409,25 @@ export default function Transporter({ moduleName = "Transporter" }) {
               <p className="text-[10px] text-gray-900">Total Earning</p>
               <p className="text-sm text-gray-700">
                 ETB {selectedDriverDetails.totalEarnings || 0}
+              </p>
+            </div>
+
+
+            <div>
+              <p className="text-[10px] text-gray-900">Addres letter</p>
+              <p className="text-sm text-gray-700">
+                ETB {selectedDriverDetails.
+address_support_letter || 0}
+              </p>
+            </div>
+
+
+
+            <div>
+              <p className="text-[10px] text-gray-900">Sin_Number</p>
+              <p className="text-sm text-gray-700">
+                ETB {selectedDriverDetails.
+sin_number || 0}
               </p>
             </div>
           </div>

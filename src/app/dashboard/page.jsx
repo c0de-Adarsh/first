@@ -142,7 +142,7 @@ export default function Dashboard({ moduleName = "Dashboard" }) {
                     </div>
                 </header>
 
-                <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 lg:grid-cols-4">
+                {/* <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 lg:grid-cols-4">
                     <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
                         <div className="flex items-center justify-between">
                             <div>
@@ -190,7 +190,11 @@ export default function Dashboard({ moduleName = "Dashboard" }) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
+
+
+
+                {/* form section */}
 
                 <div className="p-6 flex-grow">
                     <div className="p-6 bg-white rounded-xl shadow-lg h-full">
