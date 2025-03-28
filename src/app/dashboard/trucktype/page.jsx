@@ -1,15 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, X, Users, Truck, BarChart3, Clock, Bell, User } from "lucide-react";
+import { Menu, X, Users, Truck, BarChart3, Clock, Bell, User, Search } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation"
 import { usePathname } from "next/navigation";
 import { clearMessages, logoutSuccess } from "@/redux/slices/userSlice";
 import { toast } from "react-toastify";
 
-export default function Dashboard({ moduleName  }) {
+export default function Dashboard({ moduleName = "TruckType" }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [truckName, setTruckName] = useState("");
+    const [image, setImage] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
     const router = useRouter();  
     const dispatch = useDispatch()
     const { isAuthenticated, loading } = useSelector((state) => state.user);
@@ -32,6 +35,11 @@ export default function Dashboard({ moduleName  }) {
     const handleNavigation = (path) => {
         router.push(path);
         setIsMenuOpen(false);
+    };
+
+    const handleAddTruck = () => {
+        // Handle form submission
+        console.log("Adding truck:", { truckName, image });
     };
 
     const menuItems = [
@@ -142,7 +150,7 @@ export default function Dashboard({ moduleName  }) {
                     </div>
                 </header>
 
-                <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 lg:grid-cols-4">
+                {/* <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 lg:grid-cols-4">
                     <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
                         <div className="flex items-center justify-between">
                             <div>
@@ -190,18 +198,103 @@ export default function Dashboard({ moduleName  }) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
 
 
                 {/* form section */}
 
+
                 <div className="p-6 flex-grow">
-                    <div className="p-6 bg-white rounded-xl shadow-lg h-full">
-                        <h3 className="text-xl font-bold text-gray-900 mb-6">Total Users</h3>
-                        <div className="h-[calc(100%-2rem)] min-h-[300px] bg-gray-50 rounded-xl border-2 border-gray-200"></div>
-                    </div>
-                </div>
+                    <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-2xl text-gray-900 font-bold">Add Truck Type</h2>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Search Truck"
+                                    className="pl-10 text-gray-900 pr-4 py-2 w-[300px] border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
+                                />
+                                <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                            </div>
+                        </div>
+                        
+                        <div className="max-w-2xl mx-auto">
+                            <div className="mb-8 flex justify-center">
+                                <div className="w-32 h-32 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                                    {image ? (
+                                        <img 
+                                            src={URL.createObjectURL(image)} 
+                                            alt="Truck preview" 
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <Truck className="w-16 h-16 text-gray-400" />
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="space-y-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Truck Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={truckName}
+                                        onChange={(e) => setTruckName(e.target.value)}
+                                        placeholder="Name of the Truck"
+                                        className="w-full px-4 py-2 border  border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Upload Image
+                                    </label>
+                                    <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
+                                        <div className="space-y-1 text-center">
+                                            <div className="flex text-sm text-gray-600">
+                                                <label className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                    <span>Upload a file</span>
+                                                    <input
+                                                        type="file"
+                                                        className="sr-only"
+                                                        onChange={(e) => setImage(e.target.files[0])}
+                                                        accept="image/*"
+                                                    />
+                                                </label>
+                                                <p className="pl-1">or drag and drop</p>
+                                            </div>
+                                            <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4">
+                                    <button
+                                        onClick={handleAddTruck}
+                                        className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                                    >
+                                        Add Now
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setTruckName("");
+                                            setImage(null);
+                                        }}
+                                        className="flex-1 bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors duration-200"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+               
             </div>
         </div>
     );

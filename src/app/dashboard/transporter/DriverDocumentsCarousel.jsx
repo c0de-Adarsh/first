@@ -28,15 +28,8 @@ const DriverDocumentsCarousel = ({ selectedDriverDetails }) => {
             image: selectedDriverDetails.number_plate_image,
             number: selectedDriverDetails.number_plate_no,
             numberLabel: 'Plate Number'
-        },
-        ...(selectedDriverDetails.address_support_letter 
-            ? [{
-                type: 'Address Support Letter',
-                image: selectedDriverDetails.address_support_letter,
-                number: null,
-                numberLabel: null
-            }] 
-            : [])
+        }
+       
     ].filter(doc => doc.image);
 
     const handleNext = () => {
