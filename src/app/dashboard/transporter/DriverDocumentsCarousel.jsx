@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react';
 
 const DriverDocumentsCarousel = ({ selectedDriverDetails }) => {
     const [currentDocumentIndex, setCurrentDocumentIndex] = useState(0);
+    const [isZoomed, setIsZoomed] = useState(false);
+    const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
+    const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+    const imageContainerRef = useRef(null);
+    const imageRef = useRef(null);
 
     const documents = [
         {
@@ -37,12 +43,18 @@ const DriverDocumentsCarousel = ({ selectedDriverDetails }) => {
         setCurrentDocumentIndex((prevIndex) => 
             (prevIndex + 1) % documents.length
         );
+        // Reset zoom when changing document
+        setIsZoomed(false);
+        setPanPosition({ x: 0, y: 0 });
     };
 
     const handlePrevious = () => {
         setCurrentDocumentIndex((prevIndex) => 
             prevIndex === 0 ? documents.length - 1 : prevIndex - 1
         );
+        // Reset zoom when changing document
+        setIsZoomed(false);
+        setPanPosition({ x: 0, y: 0 });
     };
 
     // If no documents, return null
@@ -52,38 +64,106 @@ const DriverDocumentsCarousel = ({ selectedDriverDetails }) => {
 
     const currentDocument = documents[currentDocumentIndex];
 
+    const toggleZoom = () => {
+        setIsZoomed(!isZoomed);
+        setPanPosition({ x: 0, y: 0 });
+    };
+
+    const handleMouseDown = (e) => {
+        if (!isZoomed) return;
+        
+        e.preventDefault();
+        setIsDragging(true);
+        const rect = imageContainerRef.current.getBoundingClientRect();
+        setStartPos({
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        });
+    };
+
+    const handleMouseMove = (e) => {
+        if (!isZoomed || !isDragging) return;
+        
+        e.preventDefault();
+        const rect = imageContainerRef.current.getBoundingClientRect();
+        const newX = e.clientX - rect.left - startPos.x;
+        const newY = e.clientY - rect.top - startPos.y;
+
+        // Limit panning to prevent image from moving too far
+        const maxPanX = 150;  // Adjust these values to control panning range
+        const maxPanY = 150;
+
+        setPanPosition({
+            x: Math.max(Math.min(newX, maxPanX), -maxPanX),
+            y: Math.max(Math.min(newY, maxPanY), -maxPanY)
+        });
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
+
     return (
-        <div className="mt-6 space-y-4">
+        <div className="mt-4 space-y-4">
             <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
                 {currentDocument.type} Document
             </h3>
             
-            <div className="relative w-auto h-[100px] flex items-center justify-center">
+            <div className="relative w-full h-[300px] flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
                 {/* Previous Button */}
                 {documents.length > 1 && (
                     <button 
                         onClick={handlePrevious}
-                        className="absolute left-0 z-10 p-2 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
+                        className="absolute left-2 z-10 p-2 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
                     >
                         <ChevronLeft className="w-6 h-6" />
                     </button>
                 )}
 
-                {/* Document Image */}
-                <div className="w-full max-w-xl h-full flex items-center justify-center">
-                    <img 
-                        src={currentDocument.image || '/api/placeholder/800/600'} 
-                        alt={currentDocument.type}
-                        className="max-w-full max-h-full "
-                        onClick={() => window.open(currentDocument.image, '_blank')}
-                    />
+                {/* Document Image Container */}
+                <div 
+                    ref={imageContainerRef}
+                    className="relative w-full max-w-xl h-full flex items-center justify-center overflow-hidden"
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                >
+                    <div className="relative w-full h-full flex items-center justify-center">
+                        <img 
+                            ref={imageRef}
+                            src={currentDocument.image || '/api/placeholder/800/600'} 
+                            alt={currentDocument.type}
+                            className={`
+                                absolute max-w-none max-h-none object-contain transition-transform duration-300 ease-in-out
+                                ${isZoomed ? 'cursor-grab active:cursor-grabbing' : 'cursor-zoom-in'}
+                            `}
+                            style={{
+                                transform: isZoomed 
+                                    ? `scale(2) translate(${panPosition.x}px, ${panPosition.y}px)` 
+                                    : 'scale(1)',
+                                width: 'auto',
+                                height: 'auto'
+                            }}
+                            onClick={toggleZoom}
+                        />
+                    </div>
+                    
+                    {/* Zoom Button */}
+                    <button 
+                        onClick={toggleZoom}
+                        className="absolute top-2 right-2 p-2 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors z-10"
+                        title={isZoomed ? "Zoom Out" : "Zoom In"}
+                    >
+                        {isZoomed ? <ZoomOut className="w-5 h-5" /> : <ZoomIn className="w-5 h-5" />}
+                    </button>
                 </div>
 
                 {/* Next Button */}
                 {documents.length > 1 && (
                     <button 
                         onClick={handleNext}
-                        className="absolute right-0 z-10 p-2 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
+                        className="absolute right-2 z-10 p-2 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
                     >
                         <ChevronRight className="w-6 h-6" />
                     </button>
@@ -92,7 +172,7 @@ const DriverDocumentsCarousel = ({ selectedDriverDetails }) => {
 
             {/* Document Details */}
             {currentDocument.number && (
-                <div className="text-center mt-4">
+                <div className="text-center mt-2">
                     <p className="text-sm text-gray-900">
                         {currentDocument.numberLabel}: 
                         <span className="ml-2 font-medium">{currentDocument.number}</span>
@@ -102,7 +182,7 @@ const DriverDocumentsCarousel = ({ selectedDriverDetails }) => {
 
             {/* Pagination Dots */}
             {documents.length > 1 && (
-                <div className="flex justify-center space-x-2 mt-4">
+                <div className="flex justify-center space-x-2 mt-2">
                     {documents.map((_, index) => (
                         <button
                             key={index}

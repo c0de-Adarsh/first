@@ -46,18 +46,14 @@ export default function Transporter({ moduleName = "Transporter" }) {
     };
 
     const handleDriverVerification = (driverId, location) => {
-        dispatch(verifyDriver(driverId)).then(() => {
-            if (location && location !== 'N/A') {
-                const [latitude, longitude] = location.split(',').map(coord => coord.trim());
-                const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
-                window.open(googleMapsUrl, '_blank');
-            } else {
-                toast.error("Location information is not available");
-            }
-        }).catch((error) => {
-            // Error handling is already done in the action, but you can add additional logic if needed
-            console.error("Verification failed", error);
-        });
+        // Check if location is valid before attempting to open maps
+        if (location && location !== 'N/A') {
+            const [latitude, longitude] = location.split(',').map(coord => coord.trim());
+            const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+            window.open(googleMapsUrl, '_blank');
+        } else {
+            toast.error("Location information is not available");
+        }
     };
 
 
@@ -343,7 +339,7 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                     className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-2xl mx-4"
                                     onClick={(e) => e.stopPropagation()}
                                 >
-                                    <div className="flex justify-between items-center mb-4">
+                                    {/* <div className="flex justify-between items-center mb-4">
                                         <h2 className="text-2xl font-bold text-gray-900">Driver Details</h2>
                                         <button
                                             onClick={() => setIsDriverModalOpen(false)}
@@ -351,70 +347,77 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                         >
                                             <X className="w-6 h-6" />
                                         </button>
-                                    </div>
+                                    </div> */}
 
                                     {isDriverModalOpen && selectedDriver && (
                                         <div
                                             className="fixed inset-0 bg-[rgba(0,0,0,0.5)] z-50 flex items-center justify-center"
                                             onClick={() => setIsDriverModalOpen(false)}
                                         >
-                                            <div
-                                                className="bg-white h-auto rounded-xl shadow-2xl p-6 w-full max-w-3xl mx-4"
-                                                onClick={(e) => e.stopPropagation()}
-                                            >
-                                                <div className="flex justify-between items-center mb-4">
-                                                    <h2 className="text-2xl font-bold text-gray-900">Driver Details</h2>
-                                                    <button
-                                                        onClick={() => setIsDriverModalOpen(false)}
-                                                        className="text-gray-600 hover:text-gray-900"
-                                                    >
-                                                        <X className="w-6 h-6" />
-                                                    </button>
-                                                </div>
+                                               <div 
+      className="bg-white h-auto rounded-lg shadow-xl p-2 w-[800px] max-w-xl mx-2"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-lg font-bold text-gray-900">Driver Details</h2>
+        <button
+          onClick={() => setIsDriverModalOpen(false)}
+          className="text-gray-600 hover:text-gray-900"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
 
-                                                {selectedDriverDetails ? (
-                                                    <div className="space-y-4">
-                                                        <div className="grid grid-cols-2 gap-4">
-                                                            <div>
-                                                                <p className="text-sm text-gray-900">Name</p>
-                                                                <p className="  text-gray-700 ">{selectedDriverDetails.name || selectedDriverDetails.username || 'N/A'}</p>
-                                                            </div>
+      {selectedDriverDetails ? (
+        <div className="space-y-1">
+          <div className="grid grid-cols-4 gap-2">
+            <div>
+              <p className="text-[10px] text-gray-900">Name</p>
+              <p className="text-xs text-gray-700">
+                {selectedDriverDetails.name || selectedDriverDetails.username || 'N/A'}
+              </p>
+            </div>
 
-                                                            <div>
-                                                                <p className="text-sm text-gray-900">Mobile</p>
-                                                                <p className="  text-gray-700">{selectedDriverDetails.phone || selectedDriverDetails.mobile || 'N/A'}</p>
-                                                            </div>
-                                                            <div>
-                                                                <p className="text-sm text-gray-900">dl number</p>
-                                                                <p className="  text-gray-700">{selectedDriverDetails.
-                                                                    dl_number || selectedDriverDetails.
-                                                                        dl_number || 'N/A'}</p>
-                                                            </div>
-                                                            <div>
-                                                                <p className="text-sm text-gray-900">Truck Type</p>
-                                                                <p className=" text-gray-700">{selectedDriverDetails.vehicle_type || 'N/A'}</p>
-                                                            </div>
-                                                        </div>
+            <div>
+              <p className="text-[10px] text-gray-900">Mobile</p>
+              <p className="text-xs text-gray-700">
+                {selectedDriverDetails.phone || selectedDriverDetails.mobile || 'N/A'}
+              </p>
+            </div>
+            <div>
+              <p className="text-[10px] text-gray-900">DL Number</p>
+              <p className="text-xs text-gray-700">
+                {selectedDriverDetails.dl_number || 'N/A'}
+              </p>
+            </div>
+            <div>
+              <p className="text-[10px] text-gray-900">Truck Type</p>
+              <p className="text-xs text-gray-700">
+                {selectedDriverDetails.vehicle_type || 'N/A'}
+              </p>
+            </div>
+          </div>
 
-                                                        <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
-                                                            <div>
-                                                                <p className="text-sm text-gray-900">Total Rides</p>
-                                                                <p className="text-xl   text-gray-700">{selectedDriverDetails.totalRides || 0}</p>
-                                                            </div>
-                                                            <div>
-                                                                <p className="text-sm text-gray-900">Total Earning</p>
-                                                                <p className="text-xl  text-gray-700">ETB {selectedDriverDetails.totalEarnings || 0}</p>
-                                                            </div>
-                                                        </div>
+          <div className="grid grid-cols-4 gap-2 bg-gray-50 p-1 rounded-lg">
+            <div>
+              <p className="text-[10px] text-gray-900">Total Rides</p>
+              <p className="text-sm text-gray-700">
+                {selectedDriverDetails.totalRides || 0}
+              </p>
+            </div>
+            <div>
+              <p className="text-[10px] text-gray-900">Total Earning</p>
+              <p className="text-sm text-gray-700">
+                ETB {selectedDriverDetails.totalEarnings || 0}
+              </p>
+            </div>
+          </div>
 
+          {/* Assuming DriverDocumentsCarousel is a separate component */}
+          <DriverDocumentsCarousel selectedDriverDetails={selectedDriverDetails} />
 
-
-                                                        <DriverDocumentsCarousel selectedDriverDetails={selectedDriverDetails} />
-
-
-
-                                                        <div className="flex space-x-4">
-                                                            {(selectedDriverDetails?.status === 'PENDING') && (
+          <div className="flex p-4 space-x-4">
+                                                            {(selectedDriverDetails?.status === 'pending') && (
                                                                 <>
                                                                     <button
                                                                         onClick={handleVerifyDriver}
@@ -451,14 +454,13 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                                                 </button>
                                                             )}
                                                         </div>
-                                                        {renderDriverModalButtons()}
-                                                    </div>
-                                                ) : (
-                                                    <div className="text-center py-4">
-                                                        <p className="text-gray-500">Loading driver details...</p>
-                                                    </div>
-                                                )}
-                                            </div>
+        </div>
+      ) : (
+        <div className="text-center py-2">
+          <p className="text-xs text-gray-500">Loading driver details...</p>
+        </div>
+      )}
+    </div>
                                         </div>
                                     )}
                                 </div>
@@ -475,11 +477,11 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                     <tr>
                                         <th className="p-4 text-left text-sm font-semibold text-gray-900">ID</th>
                                         <th className="p-4 text-left text-sm font-semibold text-gray-900">Name</th>
-                                        <th className="p-4 text-left text-sm font-semibold text-gray-900">Email</th>
+                                      
                                         <th className="p-4 text-left text-sm font-semibold text-gray-900">Created At</th>
                                         <th className="p-4 text-left text-sm font-semibold text-gray-900">Mobile</th>
                                         <th className="p-4 text-left text-sm font-semibold text-gray-900">Status</th>
-                                        <th className="p-4 text-left text-sm font-semibold text-gray-900">Location</th>
+                                        {/* <th className="p-4 text-left text-sm font-semibold text-gray-900">Location</th> */}
                                         <th className="p-4 text-left text-sm font-semibold text-gray-900">Actions</th>
                                     </tr>
                                 </thead>
@@ -496,7 +498,7 @@ export default function Transporter({ moduleName = "Transporter" }) {
 
                                             const driverId = driver.id || driver._id || (index + 1).toString();
                                             const driverName = driver.name || driver.username || 'N/A';
-                                            const driverEmail = driver.email || 'N/A';
+                                            // const driverEmail = driver.email || 'N/A';
                                             const driverCreatedAt = driver.createdAt
                                                 ? new Date(driver.createdAt).toLocaleDateString()
                                                 : 'N/A';
@@ -510,7 +512,7 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                                 <tr key={driverId} className="hover:bg-gray-50">
                                                     <td className="p-4 text-sm text-gray-900">{driverId}</td>
                                                     <td className="p-4 text-sm text-gray-900 font-medium">{driverName}</td>
-                                                    <td className="p-4 text-sm text-gray-600">{driverEmail}</td>
+                                                    {/* <td className="p-4 text-sm text-gray-600">{driverEmail}</td> */}
                                                     <td className="p-4 text-sm text-gray-600">{driverCreatedAt}</td>
                                                     <td className="p-4 text-sm text-gray-600">{driverMobile}</td>
                                                     <td className="p-4">
@@ -523,7 +525,7 @@ export default function Transporter({ moduleName = "Transporter" }) {
                                                             {driverStatus}
                                                         </span>
                                                     </td>
-                                                    <td className="p-4 text-sm text-gray-600">{driverLocation}</td>
+                                                    {/* <td className="p-4 text-sm text-gray-600">{driverLocation}</td> */}
                                                     <td className="p-4">
                                                         <div className="flex gap-2">
                                                             <button
