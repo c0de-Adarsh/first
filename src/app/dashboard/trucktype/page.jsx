@@ -8,11 +8,13 @@ import { usePathname } from "next/navigation";
 import { clearMessages, logoutSuccess } from "@/redux/slices/userSlice";
 import { toast } from "react-toastify";
 
+
 export default function Dashboard({ moduleName = "TruckType" }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [truckName, setTruckName] = useState("");
     const [image, setImage] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
+    const pathname = usePathname();
     const router = useRouter();  
     const dispatch = useDispatch()
     const { isAuthenticated, loading } = useSelector((state) => state.user);
@@ -77,7 +79,7 @@ export default function Dashboard({ moduleName = "TruckType" }) {
                             key={item.label}
                             onClick={() => handleNavigation(item.path)}
                             className={`w-full text-left flex items-center p-3 rounded-lg transition-colors duration-200 ${
-                                index === 0 
+                                pathname === item.path
                                     ? "bg-blue-600 text-white font-medium" 
                                     : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                             }`}

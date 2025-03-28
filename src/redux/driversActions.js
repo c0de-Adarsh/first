@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getDriverDetailsFail, getDriverDetailsRequest, getDriverDetailsSuccess, getDriversFail, getDriversRequest, getDriversSuccess, updateDriverStatusInStore } from "./slices/driverSlice";
+import { deleteDriverSuccess, getDriverDetailsFail, getDriverDetailsRequest, getDriverDetailsSuccess, getDriversFail, getDriversRequest, getDriversSuccess, updateDriverStatusInStore } from "./slices/driverSlice";
 import { toast } from "react-toastify";
 
 // export const fetchAllDrivers = () => async (dispatch) => {
@@ -126,5 +126,29 @@ export const updateDriverStatus = (id, action) => async (dispatch) => {
       dispatch(getDriversFail(error.response?.data?.message || `Failed to ${action} driver`));
       toast.error(error.response?.data?.message || `Failed to ${action} driver`);
       throw error;
+  }
+};
+
+
+
+export const deleteDriverProfile = (id) => async (dispatch) => {
+  try {
+    dispatch(getDriversRequest());
+    
+    const response = await axios.delete(`https://canada.plotinlucknow.com/v1/api/deleteProfile/${id}`);
+    
+    
+    dispatch(deleteDriverSuccess(id));
+    
+    toast.success('Driver profile deleted successfully');
+    
+    return response.data;
+  } catch (error) {
+    console.error('Delete Driver Profile Error:', error.response?.data);
+    
+    dispatch(getDriversFail(error.response?.data?.message || "Failed to delete driver profile"));
+    toast.error(error.response?.data?.message || "Failed to delete driver profile");
+    
+    throw error;
   }
 };

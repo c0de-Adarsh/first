@@ -5,7 +5,7 @@ import { Menu, X, Users, Truck, BarChart3, Clock, Bell, User, MapPin, Stars as M
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify";
-import { fetchAllDrivers, fetchDriverDetails, updateDriverStatus, verifyDriver } from "@/redux/driversActions";
+import { deleteDriverProfile, fetchAllDrivers, fetchDriverDetails, updateDriverStatus, verifyDriver } from "@/redux/driversActions";
 import { clearMessages, logoutSuccess } from "@/redux/slices/userSlice";
 import DriverDocumentsCarousel from "./DriverDocumentsCarousel";
 
@@ -55,6 +55,19 @@ export default function Transporter({ moduleName = "Transporter" }) {
             toast.error("Location information is not available");
         }
     };
+
+
+
+    const handleDeleteDriver = (driverId) => {
+        dispatch(deleteDriverProfile(driverId))
+          .then(() => {
+           
+            dispatch(fetchAllDrivers());
+          })
+          .catch((error) => {
+            console.error('Delete driver failed', error);
+          });
+      };
 
 
 
@@ -422,7 +435,7 @@ sin_number || 0}
           <DriverDocumentsCarousel selectedDriverDetails={selectedDriverDetails} />
 
           <div className="flex p-4 space-x-4">
-                                                            {(selectedDriverDetails?.status === 'pending') && (
+                                                            {(selectedDriverDetails?.status === 'Pending') && (
                                                                 <>
                                                                     <button
                                                                         onClick={handleVerifyDriver}
@@ -508,7 +521,7 @@ sin_number || 0}
                                                 ? new Date(driver.createdAt).toLocaleDateString()
                                                 : 'N/A';
                                             const driverMobile = driver.phone || driver.mobile || 'N/A';
-                                            const driverStatus = driver.status || 'PENDINGg';
+                                            const driverStatus = driver.status || 'PENDING';
                                             const driverLocation = driver.location && driver.location.coordinates
                                                 ? `${driver.location.coordinates[0]}, ${driver.location.coordinates[1]}`
                                                 : driver.address || 'N/A';
@@ -547,7 +560,7 @@ sin_number || 0}
                                                             >
                                                                 <Info className="w-5 h-5" />
                                                             </button>
-                                                            <button
+                                                            <button  onClick={() => handleDeleteDriver(driverId)}
                                                                 className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                                                 title="Delete"
                                                             >

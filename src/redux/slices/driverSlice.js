@@ -62,6 +62,12 @@ const driversSlice = createSlice({
           state.drivers[driverIndex].status = 'VERIFIED';
       }
   },
+  deleteDriverSuccess: (state, action) => {
+    state.drivers = state.drivers.filter(driver => 
+      (driver.id || driver._id) !== action.payload
+    );
+    state.loading = false;
+  },
   updateDriverStatusInStore: (state, action) => {
     const { id, status } = action.payload;
     const driverIndex = state.drivers.findIndex(driver => 
@@ -84,6 +90,7 @@ export const {
   getDriversRequest,
   getDriversSuccess,
   getDriversFail,
+  deleteDriverSuccess,
   clearErrors,
   verifyDriverSuccess,
   updateDriverStatusInStore,
