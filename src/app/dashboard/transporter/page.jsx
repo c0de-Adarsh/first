@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, X, Users, Truck, BarChart3, Clock, Bell, User, MapPin, Stars as MarsStroke, Info, Check, XCircle } from "lucide-react";
+import { Menu, X, Users, Truck, BarChart3, Clock, Bell, User, MapPin, Stars as MarsStroke, Info, Check, XCircle, Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify";
@@ -13,6 +13,8 @@ export default function Transporter({ moduleName = "Transporter" }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [selectedDriver, setSelectedDriver] = useState(null);
     const [isDriverModalOpen, setIsDriverModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [driverToDelete, setDriverToDelete] = useState(null);
     const router = useRouter();
     const dispatch = useDispatch()
     const { isAuthenticated, loading } = useSelector((state) => state.user);
@@ -58,17 +60,25 @@ export default function Transporter({ moduleName = "Transporter" }) {
 
 
 
-    const handleDeleteDriver = (driverId) => {
-        dispatch(deleteDriverProfile(driverId))
-          .then(() => {
-           
-            dispatch(fetchAllDrivers());
-          })
-          .catch((error) => {
-            console.error('Delete driver failed', error);
-          });
-      };
-
+    const handleDeleteDriver = () => {
+        if (driverToDelete) {
+            // Extract the correct ID, prioritizing '_id' or 'id'
+            const driverId = driverToDelete._id || driverToDelete.id;
+            
+            dispatch(deleteDriverProfile(driverId))
+                .then(() => {
+                    toast.success('Driver profile deleted successfully');
+                    setIsDeleteModalOpen(false);
+                    setDriverToDelete(null);
+                    // Explicitly refetch drivers to ensure table updates
+                    dispatch(fetchAllDrivers());
+                })
+                .catch((error) => {
+                    toast.error('Failed to delete driver profile');
+                    console.error('Delete driver failed', error);
+                });
+        }
+    };
 
 
     const openDriverModal = (driver) => {
@@ -163,6 +173,59 @@ export default function Transporter({ moduleName = "Transporter" }) {
 
         return null;
     };
+
+
+
+    const openDeleteConfirmationModal = (driver) => {
+        // Ensure we're passing the entire driver object
+        setDriverToDelete({
+            ...driver,
+            id: driver.id || driver._id // Normalize the ID
+        });
+        setIsDeleteModalOpen(true);
+    };
+
+    const DeleteConfirmationModal = () => {
+        if (!isDeleteModalOpen) return null;
+
+        return (
+            <div 
+                className="fixed inset-0  bg-[rgba(0,0,0,0.5)] z-50 flex items-center justify-center"
+                onClick={() => setIsDeleteModalOpen(false)}
+            >
+                <div 
+                    className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="flex items-center mb-4">
+                        <Trash2 className="w-6 h-6 text-red-600 mr-3" />
+                        <h2 className="text-xl font-bold text-gray-900">Confirm Deletion</h2>
+                    </div>
+                    <p className="text-gray-600 mb-6">
+                        Are you sure you want to delete the driver profile for 
+                        <span className="font-bold ml-1">
+                            {driverToDelete?.name || driverToDelete?.username || 'this driver'}
+                        </span>?
+                    </p>
+                    <div className="flex justify-end space-x-4">
+                        <button
+                            onClick={() => setIsDeleteModalOpen(false)}
+                            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={handleDeleteDriver}
+                            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
 
 
 
@@ -560,7 +623,7 @@ sin_number || 0}
                                                             >
                                                                 <Info className="w-5 h-5" />
                                                             </button>
-                                                            <button  onClick={() => handleDeleteDriver(driverId)}
+                                                            <button  onClick={() => openDeleteConfirmationModal(driver)}
                                                                 className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                                                 title="Delete"
                                                             >
@@ -568,6 +631,7 @@ sin_number || 0}
                                                                     <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
                                                                 </svg>
                                                             </button>
+                                                            <DeleteConfirmationModal />
                                                         </div>
                                                     </td>
                                                 </tr>

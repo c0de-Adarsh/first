@@ -140,7 +140,7 @@ export const deleteDriverProfile = (id) => async (dispatch) => {
     
     dispatch(deleteDriverSuccess(id));
     
-    toast.success('Driver profile deleted successfully');
+   
     
     return response.data;
   } catch (error) {
